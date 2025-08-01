@@ -1,0 +1,22 @@
+name: "License Header Check"
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - '**/*.py'
+
+jobs:
+  validate-headers:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Validate Python license headers
+        uses: frgfm/validate-python-headers@v0.5.1
+        with:
+          owner: "Ionic"
+          starting-year: "2025"
+          license: "Apache-2.0"
+          ignore-files: "__init__.py"
+          ignore-folders: ".github/"

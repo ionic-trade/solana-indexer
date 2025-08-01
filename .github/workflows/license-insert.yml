@@ -1,0 +1,31 @@
+name: "Insert License Headers"
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  insert-headers:
+    if: >
+      github.event.issue.pull_request == true &&
+      contains(github.event.comment.body, '/insert-license')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Insert missing license headers
+        run: |
+          pip install insert-license-header
+          insert-license-header \
+            --license-file .github/license-notice.txt \
+            '**/*.py'
+
+      - name: Commit & push fixes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git diff --quiet || git commit -m "chore: insert Apache 2.0 license headers for Ionic"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

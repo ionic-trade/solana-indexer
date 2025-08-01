@@ -1,0 +1,2 @@
+# SPDX-FileCopyrightText: © [YEAR], Ionic
+# SPDX-License-Identifier: Apache-2.0
