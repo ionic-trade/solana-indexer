@@ -9,12 +9,8 @@ readme = "README.md"
 python = "^3.12"
 
 [tool.poetry.group.dev.dependencies]
-ruff = "^0.6.3"
 pytest = "^8.3.2"
 
-
-[tool.ruff]
-exclude = ["*.ipynb"]
 
 [build-system]
 requires = ["poetry-core"]
