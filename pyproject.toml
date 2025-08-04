@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "indexer"
+name = "ionic_solana_indexer"
 version = "0.1.0"
 description = ""
 authors = ["pawel <pawel.rainer@gmail.com>"]
@@ -19,9 +19,6 @@ aiolimit = "^0.0.3"
 python-dotenv = "^1.0.1"
 loguru = "^0.7.2"
 urllib3 = "^2.2.3"
-setproctitle = "^1.3.3"
-mplfinance = "^0.12.10b0"
-mlxtend = "^0.23.1"
 fastparquet = "^2024.11.0"
 jupyter = "^1.1.1"
 notebook = "^7.4.4"
@@ -37,8 +34,6 @@ line-profiler = "^4.2.0"
 confluent-kafka = "^2.10.0"
 solders = "^0.26.0"
 pyarrow = "^21.0.0"
-uvicorn = "^0.35.0"
-fastapi = "^0.116.1"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -50,10 +45,6 @@ jupyter = "^1.1.1"
 matplotlib = "^3.9.2"
 plotly = "^5.24.0"
 ipywidgets = "^8.1.5"
-scikit-learn = "^1.5.1"
-dtaidistance = "^2.3.12"
-seaborn = "^0.13.2"
-pytest-watch = "^4.2.0"
 
 [tool.ruff]
 exclude = ["*.ipynb"]
