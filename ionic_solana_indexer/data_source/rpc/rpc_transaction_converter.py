@@ -84,8 +84,8 @@ class SolanaTransactionDecoder:
                     program_id = parts[1]
                     stack_depth = int(log.split("invoke [")[1].rstrip("]"))
                     stack_map[stack_depth] = program_id
-                except Exception:
-                    continue
+                except Exception as e:
+                    raise Exception(f"Failed to parse log: {log}") from e
         return stack_map
 
 class TransactionConverter:
