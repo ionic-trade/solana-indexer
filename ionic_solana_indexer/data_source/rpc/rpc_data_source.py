@@ -7,7 +7,7 @@
 import aiohttp
 import msgspec
 import os
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Generic, TypeVar
 from loguru import logger
 from dotenv import load_dotenv
 
@@ -25,11 +25,12 @@ class RPCRequest(msgspec.Struct):
     jsonrpc: str = "2.0"
     id: int = 1
 
+T = TypeVar("T")
 
-class RPCResponse(msgspec.Struct):
+class RPCResponse(msgspec.Struct, Generic[T]):
     jsonrpc: str
     id: int
-    result: Any = None
+    result: T = None
     error: Dict[str, Any] = None
 
 
@@ -44,8 +45,7 @@ class SolanaRPCDataSource(BaseDataSource):
             raise ValueError("RPC URL must be provided either as parameter or SOLANA_RPC_URL environment variable")
         self.session: Optional[aiohttp.ClientSession] = None
         self.encoder = msgspec.json.Encoder()
-        self.decoder = msgspec.json.Decoder(RPCResponse)
-        self.block_decoder = msgspec.json.Decoder(Block)
+        self.block_decoder = msgspec.json.Decoder(RPCResponse[Block])
         self.converter = TransactionConverter()
 
     async def connect(self) -> None:
@@ -62,7 +62,7 @@ class SolanaRPCDataSource(BaseDataSource):
             self.session = None
         self._connected = False
 
-    async def _make_rpc_call(self, method: str, params: List[Any]) -> Any:
+    async def _make_rpc_call(self, method: str, params: List[Any]) -> bytes:
         """Makes an RPC call to the Solana endpoint using msgspec."""
         if not self.session:
             raise RuntimeError("RPC client not connected")
@@ -72,13 +72,7 @@ class SolanaRPCDataSource(BaseDataSource):
 
         headers = {"Content-Type": "application/json"}
         async with self.session.post(self.rpc_url, data=payload_bytes, headers=headers) as response:
-            response_bytes = await response.read()
-            rpc_response = self.decoder.decode(response_bytes)
-
-            if rpc_response.error:
-                raise Exception(f"RPC Error: {rpc_response.error}")
-
-            return rpc_response.result
+            return await response.read()
 
     async def get_block(self, slot: int) -> List[RawTransaction]:
         """Retrieves transactions from block at the given slot."""
@@ -89,7 +83,14 @@ class SolanaRPCDataSource(BaseDataSource):
             "rewards": True,
             "maxSupportedTransactionVersion": 0
         }])
-        block = self.block_decoder.decode(msgspec.json.encode(result))
+
+        rpc_response = self.block_decoder.decode(result)
+
+        if rpc_response.error:
+            raise ValueError(rpc_response.error)
+
+        block = rpc_response.result
+
         logger.success(
             f"Successfully retrieved block {block.blockhash} at slot {slot} with {len(block.transactions)} transactions")
 
@@ -102,8 +103,10 @@ class SolanaRPCDataSource(BaseDataSource):
     async def get_slot(self) -> int:
         """Get the current slot."""
         result = await self._make_rpc_call("getSlot", [])
-        logger.debug(f"Current slot: {result}")
-        return result
+        rpc_response = msgspec.json.decode(result)  # Decode the response
+        if "result" not in rpc_response:
+            raise ValueError("Invalid response: 'result' field missing")
+        return rpc_response["result"]
 
     async def health_check(self) -> bool:
         """Perform a health check on the RPC endpoint."""
