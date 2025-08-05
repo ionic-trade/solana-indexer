@@ -1,3 +1,9 @@
+# Copyright (C) 2025, Ionic.
+
+# This program is licensed under the Apache License 2.0.
+# See LICENSE or go to <https://www.apache.org/licenses/LICENSE-2.0> for full license details.
+
+
 """Convert Block transactions to RawTransaction format."""
 
 from typing import List, Optional, Tuple
@@ -243,11 +249,11 @@ class TransactionConverter:
             # Handle address lookup tables if present
             address_table_lookups = None
             extended_account_keys = account_keys.copy()
-            
+
             if tx_wrapper.meta and hasattr(tx_wrapper.meta, 'loadedAddresses') and tx_wrapper.meta.loadedAddresses:
                 # Add loaded addresses from lookup tables
                 loaded_addresses = tx_wrapper.meta.loadedAddresses
-                
+
                 # Add writable accounts from lookup tables
                 for addr in (loaded_addresses.writable or []):
                     extended_account_keys.append(AccountKey(
@@ -256,7 +262,7 @@ class TransactionConverter:
                         writable=True,
                         source="lookupTable"
                     ))
-                
+
                 # Add readonly accounts from lookup tables  
                 for addr in (loaded_addresses.readonly or []):
                     extended_account_keys.append(AccountKey(
@@ -265,7 +271,7 @@ class TransactionConverter:
                         writable=False,
                         source="lookupTable"
                     ))
-            
+
             transaction_message = TransactionMessage(
                 accountKeys=extended_account_keys,
                 instructions=instructions,

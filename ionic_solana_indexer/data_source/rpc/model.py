@@ -1,3 +1,9 @@
+# Copyright (C) 2025, Ionic.
+
+# This program is licensed under the Apache License 2.0.
+# See LICENSE or go to <https://www.apache.org/licenses/LICENSE-2.0> for full license details.
+
+
 """Response models for RPC data source."""
 
 from typing import Generic, TypeVar, Any, Dict

@@ -1,3 +1,9 @@
+# Copyright (C) 2025, Ionic.
+
+# This program is licensed under the Apache License 2.0.
+# See LICENSE or go to <https://www.apache.org/licenses/LICENSE-2.0> for full license details.
+
+"""TransactionErrorEnum class, an enumeration of possible transaction errors"""
 from __future__ import annotations
 
 from enum import IntEnum

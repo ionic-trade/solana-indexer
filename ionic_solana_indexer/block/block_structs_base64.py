@@ -1,12 +1,15 @@
-"""
-Definitions derived from the agave core client implementation
-"""
+# Copyright (C) 2025, Ionic.
 
+# This program is licensed under the Apache License 2.0.
+# See LICENSE or go to <https://www.apache.org/licenses/LICENSE-2.0> for full license details.
+
+"""Definitions derived from the agave core client implementation"""
 from typing import Literal, Optional, Any
 
 from msgspec import Struct, field
 
 from ionic_solana_indexer.block.transactions.transaction_errors import TransactionErrorEnum
+
 
 class TransactionError(Struct, omit_defaults=True):
     InstructionError: Optional[tuple[int, dict | str]] = None

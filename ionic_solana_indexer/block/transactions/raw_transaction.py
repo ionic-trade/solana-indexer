@@ -1,3 +1,8 @@
+# Copyright (C) 2025, Ionic.
+
+# This program is licensed under the Apache License 2.0.
+# See LICENSE or go to <https://www.apache.org/licenses/LICENSE-2.0> for full license details.
+
 """RawTransaction structures for parsing Solana transaction responses."""
 
 from __future__ import annotations
