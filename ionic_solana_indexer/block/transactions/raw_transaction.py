@@ -1,4 +1,4 @@
-"""RawTransaction structures for parsing Solana JSON-RPC transaction responses."""
+"""RawTransaction structures for parsing Solana transaction responses."""
 
 from __future__ import annotations
 from typing import Any, Optional
