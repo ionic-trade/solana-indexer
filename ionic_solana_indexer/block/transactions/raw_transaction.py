@@ -30,6 +30,7 @@ class TokenBalanceChange(Struct):
 class InstructionField(Struct):
     """Individual instruction within a transaction."""
     programId: str
+    programName: str
     stackHeight: int | None = None
     program: Optional[str] = None
     parsed: Optional[dict | str] = None
