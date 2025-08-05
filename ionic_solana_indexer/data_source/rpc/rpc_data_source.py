@@ -79,7 +79,7 @@ class SolanaRPCDataSource(BaseDataSource):
         logger.info(f"Fetching block at slot {slot}")
         result = await self._make_rpc_call("getBlock", [slot, {
             "encoding": "base64",
-            "transactionDetails": "full",
+            "transactionDetails": "full", 
             "rewards": True,
             "maxSupportedTransactionVersion": 0
         }])
@@ -90,6 +90,9 @@ class SolanaRPCDataSource(BaseDataSource):
             raise ValueError(rpc_response.error)
 
         block = rpc_response.result
+
+        if not block:
+            raise ValueError(f"Block at slot {slot} is empty")
 
         logger.success(
             f"Successfully retrieved block {block.blockhash} at slot {slot} with {len(block.transactions)} transactions")
@@ -103,10 +106,10 @@ class SolanaRPCDataSource(BaseDataSource):
     async def get_slot(self) -> int:
         """Get the current slot."""
         result = await self._make_rpc_call("getSlot", [])
-        rpc_response = msgspec.json.decode(result)  # Decode the response
+        rpc_response:RPCResponse[Block] = msgspec.json.decode(result)
         if "result" not in rpc_response:
             raise ValueError("Invalid response: 'result' field missing")
-        return rpc_response["result"]
+        return rpc_response.result.parentSlot + 1
 
     async def health_check(self) -> bool:
         """Perform a health check on the RPC endpoint."""
